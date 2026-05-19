@@ -3,21 +3,20 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Skye — Weather</title>
+  <title>Weather</title>
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --sky-deep:         #1a3a5c;
-      --sky-mid:          #2e6da4;
-      --accent:           #f4a944;
-      --glass:            rgba(255,255,255,0.18);
-      --glass-border:     rgba(255,255,255,0.35);
-      --text-dark:        #0f2137;
-      --text-muted:       #5a7a96;
-      --shadow:           0 8px 32px rgba(30,70,110,0.18);
-      --radius:           18px;
+      --sky-deep:     #1a3a5c;
+      --sky-mid:      #2e6da4;
+      --glass:        rgba(255,255,255,0.18);
+      --glass-border: rgba(255,255,255,0.35);
+      --text-dark:    #0f2137;
+      --text-muted:   #5a7a96;
+      --shadow:       0 8px 32px rgba(30,70,110,0.18);
+      --radius:       16px;
     }
 
     body {
@@ -27,8 +26,7 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: flex-start;
-      padding: 40px 16px 80px;
+      padding: 28px 16px 60px;
       position: relative;
       overflow-x: hidden;
     }
@@ -38,81 +36,73 @@
       position: fixed;
       border-radius: 50%;
       filter: blur(60px);
-      opacity: 0.35;
+      opacity: 0.32;
       pointer-events: none;
       animation: drift 18s ease-in-out infinite alternate;
     }
     body::before {
-      width: 520px; height: 380px;
+      width: 500px; height: 360px;
       background: radial-gradient(circle, #fff 30%, #b8d9f5 100%);
       top: -80px; left: -120px;
     }
     body::after {
-      width: 400px; height: 300px;
+      width: 380px; height: 280px;
       background: radial-gradient(circle, #fff 20%, #d0eaf8 100%);
       bottom: 40px; right: -100px;
-      animation-duration: 23s;
-      animation-direction: alternate-reverse;
+      animation-duration: 23s; animation-direction: alternate-reverse;
     }
     @keyframes drift {
       from { transform: translate(0,0) scale(1); }
       to   { transform: translate(40px,25px) scale(1.08); }
     }
 
+    /* ── Header ── */
     header {
       text-align: center;
-      margin-bottom: 36px;
+      margin-bottom: 20px;
       position: relative;
       z-index: 2;
     }
     header h1 {
-      font-family: 'Playfair Display', serif;
-      font-size: clamp(2.4rem, 6vw, 3.8rem);
-      color: var(--sky-deep);
-      letter-spacing: -1px;
-      line-height: 1;
-    }
-    header h1 span { color: var(--sky-mid); }
-    header p {
-      margin-top: 8px;
-      color: var(--text-muted);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 1.1rem;
       font-weight: 300;
-      font-size: 1rem;
-      letter-spacing: 0.04em;
+      color: var(--sky-deep);
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
     }
 
+    /* ── Search card ── */
     .search-card {
       background: var(--glass);
       backdrop-filter: blur(20px);
       -webkit-backdrop-filter: blur(20px);
       border: 1px solid var(--glass-border);
       border-radius: var(--radius);
-      padding: 28px 28px 24px;
+      padding: 16px 18px;
       width: 100%;
-      max-width: 520px;
+      max-width: 480px;
       box-shadow: var(--shadow);
       position: relative;
       z-index: 10;
     }
 
     .input-wrap { position: relative; }
-    .input-wrap svg {
+    .input-wrap svg.search-icon {
       position: absolute;
-      left: 14px;
-      top: 50%;
+      left: 12px; top: 50%;
       transform: translateY(-50%);
       color: var(--sky-mid);
       pointer-events: none;
     }
-
     #cityInput {
       width: 100%;
-      padding: 14px 40px 14px 44px; /* right padding makes room for the ✕ button */
+      padding: 11px 36px 11px 38px;
       border: 1.5px solid var(--glass-border);
-      border-radius: 12px;
+      border-radius: 10px;
       background: rgba(255,255,255,0.55);
       font-family: 'DM Sans', sans-serif;
-      font-size: 1rem;
+      font-size: 0.92rem;
       color: var(--text-dark);
       outline: none;
       transition: border-color 0.2s, box-shadow 0.2s;
@@ -120,80 +110,90 @@
     #cityInput::placeholder { color: var(--text-muted); }
     #cityInput:focus {
       border-color: var(--sky-mid);
-      box-shadow: 0 0 0 3px rgba(46,109,164,0.15);
+      box-shadow: 0 0 0 3px rgba(46,109,164,0.12);
       background: rgba(255,255,255,0.75);
     }
 
-    /* Clear (✕) button inside the search box */
     #clearBtn {
-      display: none; /* hidden until user types something */
+      display: none;
       position: absolute;
-      right: 12px;
-      top: 50%;
+      right: 10px; top: 50%;
       transform: translateY(-50%);
-      background: none;
-      border: none;
-      cursor: pointer;
-      padding: 2px;
+      background: none; border: none;
+      cursor: pointer; padding: 2px;
       color: var(--text-muted);
-      line-height: 1;
       transition: color 0.15s, transform 0.15s;
     }
-    #clearBtn:hover {
-      color: var(--sky-deep);
-      transform: translateY(-50%) scale(1.15);
-    }
+    #clearBtn:hover { color: var(--sky-deep); transform: translateY(-50%) scale(1.15); }
     #clearBtn.visible { display: block; }
 
     #suggestions {
       display: none;
       position: absolute;
-      top: calc(100% + 6px);
-      left: 0; right: 0;
-      background: rgba(255,255,255,0.96);
+      top: calc(100% + 5px); left: 0; right: 0;
+      background: rgba(255,255,255,0.97);
       border: 1px solid var(--glass-border);
-      border-radius: 12px;
+      border-radius: 10px;
       overflow: hidden;
-      box-shadow: 0 12px 32px rgba(30,70,110,0.18);
+      box-shadow: 0 10px 28px rgba(30,70,110,0.16);
       z-index: 100;
     }
     #suggestions.open { display: block; }
-
     .suggestion-item {
-      padding: 12px 16px;
+      padding: 10px 14px;
       cursor: pointer;
-      display: flex;
-      align-items: center;
-      gap: 10px;
+      display: flex; align-items: center; gap: 8px;
       color: var(--text-dark);
-      font-size: 0.92rem;
+      font-size: 0.88rem;
       border-bottom: 1px solid #e8f0f8;
-      transition: background 0.15s;
+      transition: background 0.12s;
     }
     .suggestion-item:last-child { border-bottom: none; }
     .suggestion-item:hover, .suggestion-item.active { background: #e8f4fd; }
-    .suggestion-item .pin { font-size: 1.1rem; flex-shrink: 0; }
-    .suggestion-item .label { line-height: 1.3; }
-    .suggestion-item .sub { font-size: 0.8rem; color: var(--text-muted); }
+    .suggestion-item .sub { font-size: 0.76rem; color: var(--text-muted); }
 
     .hint {
-      margin-top: 10px;
+      margin-top: 7px;
       text-align: center;
-      font-size: 0.78rem;
+      font-size: 0.72rem;
       color: var(--text-muted);
     }
 
+    .error-msg {
+      margin-top: 10px;
+      background: rgba(220,80,80,0.1);
+      border: 1px solid rgba(220,80,80,0.28);
+      border-radius: 8px;
+      padding: 8px 12px;
+      font-size: 0.82rem;
+      color: #8b2020;
+      display: none;
+    }
+
+    /* ── Loader ── */
+    .loader { display: none; text-align: center; margin-top: 24px; }
+    .loader-ring {
+      width: 30px; height: 30px;
+      border: 2.5px solid rgba(46,109,164,0.18);
+      border-top-color: var(--sky-mid);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      margin: 0 auto;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ── Main weather card ── */
     #weatherResult {
       display: none;
       width: 100%;
-      max-width: 520px;
-      margin-top: 24px;
+      max-width: 480px;
+      margin-top: 16px;
       position: relative;
       z-index: 5;
-      animation: fadeUp 0.4s ease both;
+      animation: fadeUp 0.35s ease both;
     }
     @keyframes fadeUp {
-      from { opacity:0; transform: translateY(20px); }
+      from { opacity:0; transform: translateY(16px); }
       to   { opacity:1; transform: translateY(0); }
     }
 
@@ -203,212 +203,236 @@
       -webkit-backdrop-filter: blur(20px);
       border: 1px solid var(--glass-border);
       border-radius: var(--radius);
-      padding: 28px;
+      padding: 18px 20px 14px;
       box-shadow: var(--shadow);
-      color: var(--text-dark);
     }
 
-    .wc-top { display: flex; justify-content: space-between; align-items: flex-start; }
-    .wc-location h2 {
+    /* Current conditions — compact top row */
+    .wc-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .wc-left {}
+    .wc-city {
       font-family: 'Playfair Display', serif;
-      font-size: 1.6rem;
-      line-height: 1.15;
+      font-size: 1.25rem;
       color: var(--sky-deep);
+      line-height: 1.1;
     }
-    .wc-location .region { font-size: 0.85rem; color: var(--text-muted); margin-top: 2px; }
-    .wc-icon { font-size: 4rem; line-height: 1; filter: drop-shadow(0 4px 8px rgba(0,0,0,0.15)); }
+    .wc-region { font-size: 0.75rem; color: var(--text-muted); margin-top: 1px; }
 
-    .wc-temp { margin-top: 20px; display: flex; align-items: baseline; gap: 8px; }
-    .wc-temp .big {
+    .wc-right {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .wc-icon { font-size: 2.4rem; line-height: 1; }
+    .wc-temp-wrap { text-align: right; }
+    .wc-temp-big {
       font-family: 'Playfair Display', serif;
-      font-size: 4.5rem;
+      font-size: 2.2rem;
       font-weight: 700;
       color: var(--sky-deep);
       line-height: 1;
     }
-    .wc-temp .unit { font-size: 1.6rem; color: var(--text-muted); }
-    .wc-desc { font-size: 1rem; color: var(--text-muted); margin-top: 4px; text-transform: capitalize; }
+    .wc-temp-unit { font-size: 0.9rem; color: var(--text-muted); }
+    .wc-desc { font-size: 0.75rem; color: var(--text-muted); text-transform: capitalize; margin-top: 2px; }
 
-    .wc-toggle { margin-top: 10px; }
+    /* Unit toggle */
+    .wc-toggle { margin-top: 8px; }
     .wc-toggle button {
       background: none;
-      border: 1.5px solid var(--sky-mid);
-      border-radius: 8px;
-      padding: 4px 12px;
+      border: 1px solid var(--sky-mid);
+      border-radius: 6px;
+      padding: 2px 9px;
       font-family: 'DM Sans', sans-serif;
-      font-size: 0.8rem;
+      font-size: 0.72rem;
       color: var(--sky-mid);
       cursor: pointer;
       transition: all 0.15s;
     }
     .wc-toggle button:hover { background: var(--sky-mid); color: #fff; }
 
-    .wc-grid { margin-top: 24px; display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+    /* Four stat boxes — compact 2x2 grid */
+    .wc-grid {
+      margin-top: 12px;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+    }
     .wc-stat {
-      background: rgba(255,255,255,0.45);
-      border-radius: 12px;
-      padding: 14px 16px;
+      background: rgba(255,255,255,0.42);
+      border-radius: 10px;
+      padding: 8px 10px;
       border: 1px solid var(--glass-border);
+      text-align: center;
     }
     .wc-stat .s-label {
-      font-size: 0.72rem;
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-      color: var(--text-muted);
-      margin-bottom: 4px;
-    }
-    .wc-stat .s-val { font-size: 1.15rem; font-weight: 500; color: var(--sky-deep); }
-    .wc-note { margin-top: 16px; font-size: 0.75rem; text-align: center; color: var(--text-muted); }
-    .wc-note a { color: var(--sky-mid); text-decoration: none; }
-
-    .error-msg {
-      margin-top: 14px;
-      background: rgba(220,80,80,0.12);
-      border: 1px solid rgba(220,80,80,0.3);
-      border-radius: 10px;
-      padding: 10px 14px;
-      font-size: 0.88rem;
-      color: #8b2020;
-      display: none;
-    }
-
-    .loader { display: none; text-align: center; margin-top: 28px; }
-    .loader-ring {
-      width: 36px; height: 36px;
-      border: 3px solid rgba(46,109,164,0.2);
-      border-top-color: var(--sky-mid);
-      border-radius: 50%;
-      animation: spin 0.8s linear infinite;
-      margin: 0 auto;
-    }
-    @keyframes spin { to { transform: rotate(360deg); } }
-
-    /* Flow diagram */
-    .flow-panel {
-      margin-top: 24px;
-      width: 100%;
-      max-width: 520px;
-      background: rgba(255,255,255,0.82);
-      backdrop-filter: blur(10px);
-      border: 1px solid var(--glass-border);
-      border-radius: var(--radius);
-      padding: 22px 24px;
-      position: relative;
-      z-index: 5;
-      font-size: 0.86rem;
-      color: var(--text-dark);
-      line-height: 1.7;
-    }
-    .flow-panel h3 {
-      font-family: 'Playfair Display', serif;
-      font-size: 1.05rem;
-      color: var(--sky-deep);
-      margin-bottom: 14px;
-    }
-    .flow-step { display: flex; gap: 12px; margin-bottom: 8px; align-items: flex-start; }
-    .flow-badge {
-      flex-shrink: 0;
-      width: 24px; height: 24px;
-      border-radius: 50%;
-      font-size: 0.72rem;
-      font-weight: 700;
-      display: flex; align-items: center; justify-content: center;
-      margin-top: 2px;
-    }
-    .badge-geo  { background: #dbeafe; color: #1e40af; }
-    .badge-hand { background: #fef3c7; color: #92400e; }
-    .badge-wx   { background: #dcfce7; color: #166534; }
-    .flow-arrow { text-align: center; color: var(--text-muted); font-size: 1rem; margin: 2px 0 2px 36px; }
-    .flow-label {
-      font-size: 0.72rem;
-      font-weight: 600;
+      font-size: 0.62rem;
       text-transform: uppercase;
       letter-spacing: 0.07em;
-      margin-bottom: 6px;
-      padding: 2px 8px;
-      border-radius: 4px;
-      display: inline-block;
+      color: var(--text-muted);
+      margin-bottom: 3px;
     }
-    .label-geo  { background: #dbeafe; color: #1e40af; }
-    .label-hand { background: #fef3c7; color: #92400e; }
-    .label-wx   { background: #dcfce7; color: #166534; }
-
-    code {
-      background: #e8f0f8;
-      border-radius: 4px;
-      padding: 1px 5px;
-      font-size: 0.8rem;
-      color: #1a3a5c;
+    .wc-stat .s-val {
+      font-size: 0.9rem;
+      font-weight: 500;
+      color: var(--sky-deep);
     }
+    .wc-note { margin-top: 10px; font-size: 0.68rem; text-align: center; color: var(--text-muted); }
+    .wc-note a { color: var(--sky-mid); text-decoration: none; }
 
-    .setup-panel {
-      margin-top: 16px;
+    /* ── 7-day forecast strip ── */
+    .forecast-strip {
+      display: none;
       width: 100%;
-      max-width: 520px;
-      background: rgba(255,255,255,0.72);
-      backdrop-filter: blur(10px);
+      max-width: 480px;
+      margin-top: 14px;
+      background: var(--glass);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
       border: 1px solid var(--glass-border);
       border-radius: var(--radius);
-      padding: 22px 24px;
-      position: relative;
-      z-index: 5;
+      padding: 14px 16px;
+      box-shadow: var(--shadow);
+      animation: fadeUp 0.4s ease both;
     }
-    .setup-panel h3 {
-      font-family: 'Playfair Display', serif;
-      font-size: 1.05rem;
-      color: var(--sky-deep);
+    .strip-title {
+      font-size: 0.68rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--text-muted);
       margin-bottom: 10px;
     }
-    .setup-panel ol {
-      padding-left: 18px;
-      font-size: 0.87rem;
-      color: var(--text-dark);
-      line-height: 1.9;
+    .strip-days {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 4px;
     }
-    .badge-inline {
-      display: inline-block;
-      background: var(--accent);
-      color: #fff;
-      border-radius: 6px;
-      padding: 2px 8px;
-      font-size: 0.72rem;
+    .strip-day {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      cursor: pointer;
+      padding: 6px 2px;
+      border-radius: 8px;
+      transition: background 0.15s;
+      border: 1px solid transparent;
+    }
+    .strip-day:hover { background: rgba(255,255,255,0.4); }
+    .strip-day.active {
+      background: rgba(255,255,255,0.55);
+      border-color: var(--glass-border);
+    }
+    .strip-day-name {
+      font-size: 0.65rem;
       font-weight: 500;
-      margin-left: 6px;
-      vertical-align: middle;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
     }
+    .strip-day-icon { font-size: 1.4rem; line-height: 1; }
+    .strip-day-hi {
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--sky-deep);
+    }
+    .strip-day-lo {
+      font-size: 0.68rem;
+      color: var(--text-muted);
+    }
+
+    /* ── Detailed 7-day scroll section ── */
+    .forecast-detail {
+      display: none;
+      width: 100%;
+      max-width: 480px;
+      margin-top: 14px;
+      animation: fadeUp 0.45s ease both;
+    }
+    .detail-title {
+      font-size: 0.68rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--text-muted);
+      margin-bottom: 8px;
+      padding-left: 2px;
+    }
+    .detail-day {
+      background: var(--glass);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid var(--glass-border);
+      border-radius: 12px;
+      padding: 12px 16px;
+      margin-bottom: 8px;
+      box-shadow: 0 4px 16px rgba(30,70,110,0.10);
+      display: flex;
+      gap: 14px;
+      align-items: flex-start;
+    }
+    .detail-day-icon {
+      font-size: 2rem;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+    .detail-day-body { flex: 1; }
+    .detail-day-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 4px;
+    }
+    .detail-day-name {
+      font-size: 0.82rem;
+      font-weight: 500;
+      color: var(--sky-deep);
+    }
+    .detail-day-temps {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+    }
+    .detail-day-temps strong { color: var(--sky-deep); }
+    .detail-day-desc {
+      font-size: 0.78rem;
+      color: var(--text-dark);
+      line-height: 1.55;
+      text-transform: capitalize;
+      margin-bottom: 4px;
+    }
+    .detail-day-meta {
+      font-size: 0.72rem;
+      color: var(--text-muted);
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    /* ── Flow panel & setup (collapsed, for reference) ── */
+    .flow-panel, .setup-panel { display: none; }
   </style>
 </head>
 <body>
 
 <header>
-  <h1>Sky<span>e</span></h1>
-  <p>Simple weather. No fuss.</p>
+  <h1>Weather</h1>
 </header>
 
-<!-- ═══════════════════════════════════════
-     PASTE YOUR API KEYS HERE
-     ═══════════════════════════════════════ -->
 <script>
-  const GEOAPIFY_KEY = '75ad35d550f1455ab47ad6f172331819';  // geoapify.com       — search & fuzzy matching
-  const OWM_KEY      = '6c928cfba8a5e8b86a736491f46b345c';  // openweathermap.org — weather data
+  const GEOAPIFY_KEY = '75ad35d550f1455ab47ad6f172331819';  // geoapify.com
+  const OWM_KEY      = '6c928cfba8a5e8b86a736491f46b345c';  // openweathermap.org
 </script>
 
 <div class="search-card">
   <div class="input-wrap">
-    <!-- Search icon on the left -->
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <svg class="search-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
       <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
     </svg>
-    <input
-      type="text"
-      id="cityInput"
-      placeholder="City, State  or  ZIP code…"
-      autocomplete="off"
-      spellcheck="false"
-    />
-    <!-- Clear (✕) button on the right — shown only when input has text -->
-    <button id="clearBtn" aria-label="Clear search">
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+    <input type="text" id="cityInput" placeholder="City, State or ZIP…" autocomplete="off" spellcheck="false"/>
+    <button id="clearBtn" aria-label="Clear">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
         <circle cx="12" cy="12" r="10"/>
         <line x1="15" y1="9" x2="9" y2="15"/>
         <line x1="9" y1="9" x2="15" y2="15"/>
@@ -417,142 +441,90 @@
     <div id="suggestions"></div>
   </div>
   <div class="error-msg" id="errorMsg"></div>
-  <p class="hint">Pick a suggestion from the dropdown, or press Enter</p>
+  <p class="hint">Pick from dropdown or press Enter</p>
 </div>
 
 <div class="loader" id="loader"><div class="loader-ring"></div></div>
 
+<!-- Current conditions -->
 <div id="weatherResult">
   <div class="weather-card">
     <div class="wc-top">
-      <div class="wc-location">
-        <h2 id="wCity">—</h2>
-        <div class="region" id="wRegion"></div>
+      <div class="wc-left">
+        <div class="wc-city" id="wCity">—</div>
+        <div class="wc-region" id="wRegion"></div>
+        <div class="wc-toggle"><button id="toggleUnit">°C</button></div>
       </div>
-      <div class="wc-icon" id="wIcon">🌤</div>
+      <div class="wc-right">
+        <div class="wc-icon" id="wIcon">🌤</div>
+        <div class="wc-temp-wrap">
+          <div class="wc-temp-big"><span id="wTemp">—</span><span class="wc-temp-unit">°<span id="wUnit">F</span></span></div>
+          <div class="wc-desc" id="wDesc"></div>
+        </div>
+      </div>
     </div>
-    <div class="wc-temp">
-      <div class="big" id="wTemp">—</div>
-      <div class="unit">°<span id="wUnit">F</span></div>
-    </div>
-    <div class="wc-desc" id="wDesc"></div>
-    <div class="wc-toggle"><button id="toggleUnit">Switch to °C</button></div>
     <div class="wc-grid">
-      <div class="wc-stat"><div class="s-label">Feels Like</div><div class="s-val" id="wFeels">—</div></div>
-      <div class="wc-stat"><div class="s-label">Humidity</div><div class="s-val" id="wHumidity">—</div></div>
+      <div class="wc-stat"><div class="s-label">Feels</div><div class="s-val" id="wFeels">—</div></div>
+      <div class="wc-stat"><div class="s-label">Humid</div><div class="s-val" id="wHumidity">—</div></div>
       <div class="wc-stat"><div class="s-label">Wind</div><div class="s-val" id="wWind">—</div></div>
-      <div class="wc-stat"><div class="s-label">Visibility</div><div class="s-val" id="wVis">—</div></div>
+      <div class="wc-stat"><div class="s-label">Vis</div><div class="s-val" id="wVis">—</div></div>
     </div>
     <div class="wc-note">Data from <a href="https://openweathermap.org" target="_blank">OpenWeatherMap</a></div>
   </div>
 </div>
 
-<!-- Visual explanation of the two-API flow -->
-<div class="flow-panel">
-  <h3>📐 How the two APIs hand off to each other</h3>
-
-  <span class="flow-label label-geo">Section A — Geocoding API (Geoapify)</span>
-  <div class="flow-step">
-    <div class="flow-badge badge-geo">1</div>
-    <div>User types <em>"Atlnta GA"</em>. The <strong>Geocoding API</strong> handles fuzzy matching and streams back location suggestions as they type.</div>
-  </div>
-  <div class="flow-step">
-    <div class="flow-badge badge-geo">2</div>
-    <div>User picks <em>"Atlanta, Georgia, US"</em>. The geocoder returns exact coordinates: <code>lat: 33.749</code> <code>lon: -84.388</code>. Its job is done.</div>
-  </div>
-
-  <div class="flow-arrow">↓ &nbsp; coordinates passed to the handoff &nbsp; ↓</div>
-
-  <span class="flow-label label-hand">Section B — The Handoff (your JavaScript)</span>
-  <div class="flow-step">
-    <div class="flow-badge badge-hand">↔</div>
-    <div>Your code takes the <code>lat</code> and <code>lon</code> from the geocoder and passes them as parameters in a brand-new, separate request to the Weather API. The two services never talk to each other — <em>your code is the middleman.</em></div>
-  </div>
-
-  <div class="flow-arrow">↓ &nbsp; lat/lon sent to weather service &nbsp; ↓</div>
-
-  <span class="flow-label label-wx">Section C — Weather API (OpenWeatherMap)</span>
-  <div class="flow-step">
-    <div class="flow-badge badge-wx">3</div>
-    <div>The <strong>Weather API</strong> knows nothing about city names. It only accepts coordinates. It returns temperature, humidity, wind, etc. for that point on earth.</div>
-  </div>
-  <div class="flow-step">
-    <div class="flow-badge badge-wx">4</div>
-    <div>Your JavaScript reads the weather response and updates the page. Done.</div>
-  </div>
+<!-- 7-day strip -->
+<div class="forecast-strip" id="forecastStrip">
+  <div class="strip-title">7-Day Forecast</div>
+  <div class="strip-days" id="stripDays"></div>
 </div>
 
-<!-- Setup instructions -->
-<div class="setup-panel" id="setupPanel">
-  <h3>⚙️ Quick Setup <span class="badge-inline">2 free keys needed</span></h3>
-  <ol>
-    <li>Sign up at <strong>geoapify.com</strong> → create a project → copy key → paste as <code>GEOAPIFY_KEY</code> at the top of this file.</li>
-    <li>Sign up at <strong>openweathermap.org</strong> → API Keys tab → copy key → paste as <code>OWM_KEY</code>.</li>
-    <li>Open <code>index.html</code> directly in your browser — no server needed yet.</li>
-    <li>Deploy on <strong>Cloudflare Pages</strong>: push to GitHub → Cloudflare dashboard → Pages → Connect to Git. Done in minutes.</li>
-    <li><em>Next step:</em> move your keys into a <strong>Cloudflare Worker</strong> so they're never exposed in your page source.</li>
-  </ol>
+<!-- Detailed scroll -->
+<div class="forecast-detail" id="forecastDetail">
+  <div class="detail-title">Day by Day</div>
+  <div id="detailDays"></div>
 </div>
 
 
-<!-- ═══════════════════════════════════════════════════════════════════════════
-     JAVASCRIPT
-
-     Organised into three sections that mirror the flow diagram above:
-
-       SECTION A  ·  GEOCODING API  (Geoapify)
-                     Handles typing, live dropdown, fuzzy matching, and
-                     produces a { lat, lon } coordinate pair.
-
-       SECTION B  ·  THE HANDOFF
-                     Decides which source provides the coordinates, then
-                     passes them to Section C.
-
-       SECTION C  ·  WEATHER API  (OpenWeatherMap)
-                     Accepts coordinates only. Fetches and displays weather.
-
-     The naming convention makes the separation easy to follow:
-       geocode_*   functions belong to Section A
-       weather_*   functions belong to Section C
-       startSearch is Section B
-     ═══════════════════════════════════════════════════════════════════════════ -->
+<!-- ═══════════════════════════════════════════════════════════════════
+     JAVASCRIPT — same three-section structure as before
+     SECTION A · GEOCODING API  (Geoapify)
+     SECTION B · THE HANDOFF
+     SECTION C · WEATHER API  (OpenWeatherMap)
+     ═══════════════════════════════════════════════════════════════════ -->
 <script>
 
-// ─── Shared state & DOM handles ───────────────────────────────────────────────
-
+// ─── State & DOM ──────────────────────────────────────────────────────────────
 let useFahrenheit  = true;
-let lastWeatherRaw = null;   // saved so °F ↔ °C toggle works without a new API call
+let lastWeatherRaw = null;
+let lastForecastRaw = null;
 let debounceTimer  = null;
+let pendingCoords  = null;
 
-// Coordinates stored here when the user picks from the live dropdown.
-// Section B reads this to avoid a redundant geocoding call.
-let pendingCoords  = null;   // { lat, lon } — written by Section A, read by Section B
+const input          = document.getElementById('cityInput');
+const suggestBox     = document.getElementById('suggestions');
+const clearBtn       = document.getElementById('clearBtn');
+const loader         = document.getElementById('loader');
+const resultEl       = document.getElementById('weatherResult');
+const errorEl        = document.getElementById('errorMsg');
+const toggleBtn      = document.getElementById('toggleUnit');
+const forecastStrip  = document.getElementById('forecastStrip');
+const forecastDetail = document.getElementById('forecastDetail');
+const stripDays      = document.getElementById('stripDays');
+const detailDays     = document.getElementById('detailDays');
 
-const input      = document.getElementById('cityInput');
-const suggestBox = document.getElementById('suggestions');
-const clearBtn   = document.getElementById('clearBtn');
-const loader     = document.getElementById('loader');
-const resultEl   = document.getElementById('weatherResult');
-const errorEl    = document.getElementById('errorMsg');
-const setupPanel = document.getElementById('setupPanel');
-const toggleBtn  = document.getElementById('toggleUnit');
-
-if (GEOAPIFY_KEY !== 'YOUR_GEOAPIFY_KEY' && OWM_KEY !== 'YOUR_OPENWEATHERMAP_KEY') {
-  setupPanel.style.display = 'none';
-}
-
-// Show/hide the ✕ clear button depending on whether the input has text
 function updateClearBtn() {
   clearBtn.classList.toggle('visible', input.value.length > 0);
 }
 
-// Clear button click — wipe the input, hide weather result, reset state
 clearBtn.addEventListener('click', () => {
-  input.value   = '';
+  input.value = '';
   pendingCoords = null;
   closeSuggestions();
   showError('');
-  resultEl.style.display = 'none';
+  resultEl.style.display       = 'none';
+  forecastStrip.style.display  = 'none';
+  forecastDetail.style.display = 'none';
   updateClearBtn();
   input.focus();
 });
@@ -560,16 +532,8 @@ clearBtn.addEventListener('click', () => {
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 // SECTION A — GEOCODING API (Geoapify)
-//
-// Responsibility: turn text into coordinates.
-// Output: sets pendingCoords = { lat, lon } when the user picks a result.
-//
-// This section has zero knowledge of weather.
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-// Fire a geocoding request 320ms after the user stops typing.
-// Waiting before sending is called "debouncing" — it stops us from
-// hammering the API on every single keystroke.
 input.addEventListener('input', () => {
   pendingCoords = null;
   updateClearBtn();
@@ -579,13 +543,12 @@ input.addEventListener('input', () => {
   debounceTimer = setTimeout(() => geocode_fetchSuggestions(q), 320);
 });
 
-// Arrow-key navigation and Enter / Escape inside the dropdown
 input.addEventListener('keydown', (e) => {
   const items  = suggestBox.querySelectorAll('.suggestion-item');
   const active = suggestBox.querySelector('.suggestion-item.active');
   let idx = [...items].indexOf(active);
-  if      (e.key === 'ArrowDown') { e.preventDefault(); idx = Math.min(idx + 1, items.length - 1); geocode_setActive(items, idx); }
-  else if (e.key === 'ArrowUp')   { e.preventDefault(); idx = Math.max(idx - 1, 0);               geocode_setActive(items, idx); }
+  if      (e.key === 'ArrowDown') { e.preventDefault(); idx = Math.min(idx+1, items.length-1); geocode_setActive(items, idx); }
+  else if (e.key === 'ArrowUp')   { e.preventDefault(); idx = Math.max(idx-1, 0);              geocode_setActive(items, idx); }
   else if (e.key === 'Enter')     { e.preventDefault(); active ? active.click() : startSearch(); }
   else if (e.key === 'Escape')    { closeSuggestions(); }
 });
@@ -594,111 +557,52 @@ document.addEventListener('click', e => {
   if (!e.target.closest('.input-wrap')) closeSuggestions();
 });
 
-
-/**
- * GEOCODING API CALL — live autocomplete
- *
- * Sends the partial text to Geoapify. Geoapify handles fuzzy matching
- * internally ("Atlnta" → "Atlanta"). Returns ranked location objects.
- */
 async function geocode_fetchSuggestions(query) {
   if (GEOAPIFY_KEY === 'YOUR_GEOAPIFY_KEY') return;
   try {
-    const url = `https://api.geoapify.com/v1/geocode/autocomplete`
-              + `?text=${encodeURIComponent(query)}`
-              + `&limit=5&format=json`
-              + `&apiKey=${GEOAPIFY_KEY}`;
-
-    const response = await fetch(url);
-    const data     = await response.json();
+    const url = `https://api.geoapify.com/v1/geocode/autocomplete?text=${encodeURIComponent(query)}&limit=5&format=json&apiKey=${GEOAPIFY_KEY}`;
+    const res  = await fetch(url);
+    const data = await res.json();
     geocode_renderSuggestions(data.results || []);
-  } catch {
-    closeSuggestions();
-  }
+  } catch { closeSuggestions(); }
 }
 
-
-/**
- * GEOCODING API CALL — single best-match lookup
- *
- * Used when the user hits Enter without picking from the dropdown.
- * Returns a { lat, lon } object or throws if nothing is found.
- */
 async function geocode_lookupBestMatch(query) {
-  if (GEOAPIFY_KEY === 'YOUR_GEOAPIFY_KEY') {
-    return await geocode_owmFallback(query); // no Geoapify key? use OWM's simpler geocoder
-  }
-
-  const url = `https://api.geoapify.com/v1/geocode/search`
-            + `?text=${encodeURIComponent(query)}`
-            + `&limit=1&format=json`
-            + `&apiKey=${GEOAPIFY_KEY}`;
-
-  const response = await fetch(url);
-  const data     = await response.json();
-  const result   = (data.results || [])[0];
-
-  if (!result) {
-    throw new Error(`Couldn't find "${query}". Try adding a state abbreviation, e.g. "Springfield IL".`);
-  }
-
-  return { lat: result.lat, lon: result.lon };
+  if (GEOAPIFY_KEY === 'YOUR_GEOAPIFY_KEY') return await geocode_owmFallback(query);
+  const url  = `https://api.geoapify.com/v1/geocode/search?text=${encodeURIComponent(query)}&limit=1&format=json&apiKey=${GEOAPIFY_KEY}`;
+  const res  = await fetch(url);
+  const data = await res.json();
+  const r    = (data.results || [])[0];
+  if (!r) throw new Error(`Couldn't find "${query}". Try adding a state abbreviation.`);
+  return { lat: r.lat, lon: r.lon };
 }
 
-
-/**
- * GEOCODING FALLBACK — OWM's built-in geo endpoint
- *
- * Less fuzzy than Geoapify but works without a second API key.
- */
 async function geocode_owmFallback(query) {
-  const url = `https://api.openweathermap.org/geo/1.0/direct`
-            + `?q=${encodeURIComponent(query)}`
-            + `&limit=1&appid=${OWM_KEY}`;
-
-  const response = await fetch(url);
-  const data     = await response.json();
-
-  if (!data.length) {
-    throw new Error(`Couldn't find "${query}". Try a different spelling or add a state abbreviation.`);
-  }
+  const url  = `https://api.openweathermap.org/geo/1.0/direct?q=${encodeURIComponent(query)}&limit=1&appid=${OWM_KEY}`;
+  const res  = await fetch(url);
+  const data = await res.json();
+  if (!data.length) throw new Error(`Couldn't find "${query}".`);
   return { lat: data[0].lat, lon: data[0].lon };
 }
 
-
-/** Builds and shows the clickable suggestion list */
 function geocode_renderSuggestions(results) {
   if (!results.length) { closeSuggestions(); return; }
   suggestBox.innerHTML = '';
-
   results.forEach(r => {
     const city    = r.city || r.county || r.state || r.name || '';
     const state   = r.state_code || r.state || '';
     const country = r.country_code === 'us' ? '' : (r.country || '');
     const label   = [city, state, country].filter(Boolean).join(', ');
     const sub     = r.formatted || '';
-
     const el = document.createElement('div');
     el.className = 'suggestion-item';
-    el.innerHTML = `<span class="pin">📍</span>
-                    <div class="label">${label}
-                      <div class="sub">${sub !== label ? sub : ''}</div>
-                    </div>`;
-
+    el.innerHTML = `<span>📍</span><div><div>${label}</div><div class="sub">${sub !== label ? sub : ''}</div></div>`;
     el.addEventListener('click', () => {
-      input.value = label;
-
-      // ── SECTION A OUTPUT ──────────────────────────────────────
-      // Store the coordinates so Section B can use them immediately.
-      // This avoids making a second geocoding call just to look up
-      // something we already have from the dropdown response.
+      input.value   = label;
       pendingCoords = { lat: r.lat, lon: r.lon };
-      // ─────────────────────────────────────────────────────────
-
       closeSuggestions();
-      startSearch(); // jump to Section B
+      startSearch();
     });
-
     suggestBox.appendChild(el);
   });
   suggestBox.classList.add('open');
@@ -717,70 +621,31 @@ function closeSuggestions() {
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 // SECTION B — THE HANDOFF
-//
-// This is the bridge between Section A and Section C.
-// It figures out where the coordinates come from, then passes them
-// to the Weather API. Nothing else happens here.
-//
-// Triggered by: dropdown pick (Section A) or Enter key.
-// No button — the dropdown IS the primary action.
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 async function startSearch() {
   closeSuggestions();
   showError('');
   const query = input.value.trim();
-
   if (!query) { showError('Please enter a city name or ZIP code.'); return; }
-  if (OWM_KEY === 'YOUR_OPENWEATHERMAP_KEY') {
-    showError('Paste your OpenWeatherMap API key into the script block at the top of this file.');
-    return;
-  }
 
   showLoader(true);
-  resultEl.style.display = 'none';
+  resultEl.style.display       = 'none';
+  forecastStrip.style.display  = 'none';
+  forecastDetail.style.display = 'none';
 
   try {
-    // ── THE HANDOFF ───────────────────────────────────────────────────────
-    //
-    // We need { lat, lon } to pass to the Weather API.
-    // There are three ways to get them:
-    //
-    //  PATH 1 · User picked from the dropdown
-    //           Section A already fetched and stored the coordinates.
-    //           Just use them. No extra API call needed.
-    //
-    //  PATH 2 · User typed a ZIP code and hit Enter
-    //           OWM handles ZIP lookup natively, so we skip geocoding
-    //           and call the weather endpoint directly.
-    //
-    //  PATH 3 · User typed a city name and hit Enter (no dropdown pick)
-    //           Call the Geocoding API now to resolve the text to coords,
-    //           then pass those coords along to the Weather API.
-    //
-    // In every path, Section C (weather_fetchByCoords or weather_fetchByZip)
-    // receives the same kind of input: a location.
-    //
-    // ─────────────────────────────────────────────────────────────────────
-
     if (pendingCoords) {
-      // PATH 1 — coordinates already came from the dropdown (Section A)
-      const coords  = pendingCoords;
-      pendingCoords = null;
-      await weather_fetchByCoords(coords.lat, coords.lon);   // → Section C
-
+      const coords = pendingCoords; pendingCoords = null;
+      await weather_fetchByCoords(coords.lat, coords.lon);
     } else if (/^\d{5}(-\d{4})?$/.test(query)) {
-      // PATH 2 — ZIP code, OWM handles it without a geocoding step
-      await weather_fetchByZip(query);                       // → Section C
-
+      await weather_fetchByZip(query);
     } else {
-      // PATH 3 — plain city text, ask geocoder for coordinates first
-      const coords = await geocode_lookupBestMatch(query);   // → Section A
-      await weather_fetchByCoords(coords.lat, coords.lon);   // → Section C
+      const coords = await geocode_lookupBestMatch(query);
+      await weather_fetchByCoords(coords.lat, coords.lon);
     }
-
   } catch (err) {
-    showError(err.message || 'Something went wrong. Check your API keys and try again.');
+    showError(err.message || 'Something went wrong. Check your API keys.');
   } finally {
     showLoader(false);
   }
@@ -789,95 +654,157 @@ async function startSearch() {
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 // SECTION C — WEATHER API (OpenWeatherMap)
-//
-// Responsibility: accept coordinates, fetch weather, display it.
-//
-// Important: this section never sees city names or user input.
-// It only ever receives numbers (lat & lon) from Section B.
-// That is intentional — weather APIs are coordinate-based because
-// coordinates are universal and unambiguous; city names are not.
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-/**
- * WEATHER API CALL — by coordinates (the main path after the handoff)
- */
 async function weather_fetchByCoords(lat, lon) {
-  const url = `https://api.openweathermap.org/data/2.5/weather`
-            + `?lat=${lat}&lon=${lon}`
-            + `&units=imperial`    // always fetch °F; we convert to °C in JS if the user asks
-            + `&appid=${OWM_KEY}`;
+  // Fetch current conditions and 7-day forecast in parallel
+  const [curRes, fctRes] = await Promise.all([
+    fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&units=imperial&appid=${OWM_KEY}`),
+    fetch(`https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&units=imperial&appid=${OWM_KEY}`)
+  ]);
 
-  const response = await fetch(url);
-  if (!response.ok) {
-    const err = await response.json();
-    throw new Error(err.message || 'Weather data unavailable for this location.');
-  }
+  if (!curRes.ok) { const e = await curRes.json(); throw new Error(e.message); }
+  if (!fctRes.ok) { const e = await fctRes.json(); throw new Error(e.message); }
 
-  const data = await response.json();
-  weather_displayResult(data);
+  const curData = await curRes.json();
+  const fctData = await fctRes.json();
+
+  weather_displayCurrent(curData);
+  weather_displayForecast(fctData);
 }
 
-
-/**
- * WEATHER API CALL — by ZIP code (shortcut, skips the geocoding step entirely)
- *
- * OWM accepts ZIP codes natively. The response format is identical to
- * the coordinate endpoint, so weather_displayResult handles both.
- */
 async function weather_fetchByZip(zip) {
-  const url = `https://api.openweathermap.org/data/2.5/weather`
-            + `?zip=${zip},us`
-            + `&units=imperial`
-            + `&appid=${OWM_KEY}`;
-
-  const response = await fetch(url);
-  if (!response.ok) {
-    const err = await response.json();
-    throw new Error(err.message || `ZIP code "${zip}" not found.`);
-  }
-
-  const data = await response.json();
-  weather_displayResult(data);
+  const res  = await fetch(`https://api.openweathermap.org/data/2.5/weather?zip=${zip},us&units=imperial&appid=${OWM_KEY}`);
+  if (!res.ok) { const e = await res.json(); throw new Error(e.message || `ZIP "${zip}" not found.`); }
+  const data = await res.json();
+  // Use the returned coords to also fetch the forecast
+  await weather_fetchByCoords(data.coord.lat, data.coord.lon);
 }
 
-
-/**
- * Parses the OWM response and updates the UI.
- * All temperatures arrive in °F (we requested imperial units above).
- */
-function weather_displayResult(data) {
-  lastWeatherRaw = data;   // save raw data for the °F ↔ °C toggle
+function weather_displayCurrent(data) {
+  lastWeatherRaw = data;
   useFahrenheit  = true;
 
-  const tempF    = Math.round(data.main.temp);
-  const feelsF   = Math.round(data.main.feels_like);
-  const humidity = data.main.humidity;
-  const windMph  = Math.round(data.wind.speed);
-  const visMiles = (data.visibility / 1609.34).toFixed(1);
-  const desc     = data.weather[0].description;
-  const code     = data.weather[0].id;
+  const tempF  = Math.round(data.main.temp);
+  const feelsF = Math.round(data.main.feels_like);
+  const visMi  = (data.visibility / 1609.34).toFixed(1);
 
   document.getElementById('wCity').textContent     = data.name;
   document.getElementById('wRegion').textContent   = data.sys?.country || '';
   document.getElementById('wTemp').textContent     = tempF;
   document.getElementById('wUnit').textContent     = 'F';
-  document.getElementById('wDesc').textContent     = desc;
-  document.getElementById('wFeels').textContent    = `${feelsF}°F`;
-  document.getElementById('wHumidity').textContent = `${humidity}%`;
-  document.getElementById('wWind').textContent     = `${windMph} mph`;
-  document.getElementById('wVis').textContent      = `${visMiles} mi`;
-  document.getElementById('wIcon').textContent     = weather_toEmoji(code);
-  toggleBtn.textContent = 'Switch to °C';
+  document.getElementById('wDesc').textContent     = data.weather[0].description;
+  document.getElementById('wFeels').textContent    = `${feelsF}°`;
+  document.getElementById('wHumidity').textContent = `${data.main.humidity}%`;
+  document.getElementById('wWind').textContent     = `${Math.round(data.wind.speed)}mph`;
+  document.getElementById('wVis').textContent      = `${visMi}mi`;
+  document.getElementById('wIcon').textContent     = weather_toEmoji(data.weather[0].id);
+  toggleBtn.textContent = '°C';
 
   resultEl.style.display = 'block';
 }
 
+/**
+ * OWM's free forecast endpoint returns data in 3-hour intervals for 5 days.
+ * We group by day and take the midday reading for each to get a daily summary.
+ */
+function weather_displayForecast(data) {
+  lastForecastRaw = data;
+  const days = forecast_groupByDay(data.list);
 
-/** Maps OWM condition codes to a weather emoji */
+  // ── Strip ──
+  stripDays.innerHTML = '';
+  days.forEach((day, i) => {
+    const el = document.createElement('div');
+    el.className = 'strip-day' + (i === 0 ? ' active' : '');
+    el.innerHTML = `
+      <div class="strip-day-name">${day.shortName}</div>
+      <div class="strip-day-icon">${weather_toEmoji(day.conditionId)}</div>
+      <div class="strip-day-hi">${Math.round(day.hiF)}°</div>
+      <div class="strip-day-lo">${Math.round(day.loF)}°</div>`;
+    stripDays.appendChild(el);
+  });
+
+  // ── Detail cards ──
+  detailDays.innerHTML = '';
+  days.forEach(day => {
+    const hiF = Math.round(day.hiF), loF = Math.round(day.loF);
+    const el = document.createElement('div');
+    el.className = 'detail-day';
+    el.innerHTML = `
+      <div class="detail-day-icon">${weather_toEmoji(day.conditionId)}</div>
+      <div class="detail-day-body">
+        <div class="detail-day-header">
+          <div class="detail-day-name">${day.fullName}</div>
+          <div class="detail-day-temps"><strong>${hiF}°F</strong> / ${loF}°F</div>
+        </div>
+        <div class="detail-day-desc">${day.description}</div>
+        <div class="detail-day-meta">
+          <span>💧 ${day.humidity}%</span>
+          <span>💨 ${Math.round(day.windMph)} mph</span>
+          <span>🌧 ${Math.round(day.pop * 100)}% precip chance</span>
+        </div>
+      </div>`;
+    detailDays.appendChild(el);
+  });
+
+  forecastStrip.style.display  = 'block';
+  forecastDetail.style.display = 'block';
+}
+
+/**
+ * Groups 3-hour OWM forecast slots into daily summaries.
+ * Picks the slot closest to noon for the representative condition.
+ */
+function forecast_groupByDay(list) {
+  const map = {};
+  const days = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+  const fullDays = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+
+  list.forEach(slot => {
+    const date = new Date(slot.dt * 1000);
+    const key  = date.toDateString();
+    if (!map[key]) {
+      map[key] = {
+        shortName:   days[date.getDay()],
+        fullName:    fullDays[date.getDay()],
+        slots:       [],
+        hiF: -999, loF: 999,
+        conditionId: slot.weather[0].id,
+        description: slot.weather[0].description,
+        humidity:    slot.main.humidity,
+        windMph:     slot.wind.speed,
+        pop:         slot.pop || 0,
+        noonSlot:    null,
+      };
+    }
+    const d = map[key];
+    d.slots.push(slot);
+    if (slot.main.temp_max > d.hiF) d.hiF = slot.main.temp_max;
+    if (slot.main.temp_min < d.loF) d.loF = slot.main.temp_min;
+    // Pick the slot closest to noon as the representative
+    const hour = date.getHours();
+    if (!d.noonSlot || Math.abs(hour - 12) < Math.abs(new Date(d.noonSlot.dt * 1000).getHours() - 12)) {
+      d.noonSlot    = slot;
+      d.conditionId = slot.weather[0].id;
+      d.description = slot.weather[0].description;
+      d.humidity    = slot.main.humidity;
+      d.windMph     = slot.wind.speed;
+      d.pop         = slot.pop || 0;
+    }
+  });
+
+  // Return up to 7 days, skip today if it only has a few slots left
+  return Object.values(map).slice(0, 7);
+}
+
+/** Maps OWM condition codes to emoji */
 function weather_toEmoji(code) {
   if (code >= 200 && code < 300) return '⛈️';
   if (code >= 300 && code < 400) return '🌦️';
-  if (code >= 500 && code < 600) return '🌧️';
+  if (code >= 500 && code < 504) return '🌧️';
+  if (code === 511)               return '🌨️';
+  if (code >= 520 && code < 600) return '🌧️';
   if (code >= 600 && code < 700) return '❄️';
   if (code >= 700 && code < 800) return '🌫️';
   if (code === 800)               return '☀️';
@@ -887,37 +814,69 @@ function weather_toEmoji(code) {
   return '🌡️';
 }
 
-
-// ── °F / °C toggle — pure maths, no extra API call needed ─────────────────
-
+// ── °F / °C toggle ────────────────────────────────────────────────────────────
 toggleBtn.addEventListener('click', () => {
   if (!lastWeatherRaw) return;
   useFahrenheit = !useFahrenheit;
-
+  const toC = f => Math.round((f - 32) * 5 / 9);
   const rawF   = lastWeatherRaw.main.temp;
   const feelsF = lastWeatherRaw.main.feels_like;
-  const toC    = f => Math.round((f - 32) * 5 / 9);
 
   if (useFahrenheit) {
-    document.getElementById('wTemp').textContent   = Math.round(rawF);
-    document.getElementById('wUnit').textContent   = 'F';
-    document.getElementById('wFeels').textContent  = `${Math.round(feelsF)}°F`;
-    toggleBtn.textContent = 'Switch to °C';
+    document.getElementById('wTemp').textContent  = Math.round(rawF);
+    document.getElementById('wUnit').textContent  = 'F';
+    document.getElementById('wFeels').textContent = `${Math.round(feelsF)}°`;
+    toggleBtn.textContent = '°C';
+    // Update strip highs/lows back to F
+    if (lastForecastRaw) weather_displayForecast(lastForecastRaw);
   } else {
-    document.getElementById('wTemp').textContent   = toC(rawF);
-    document.getElementById('wUnit').textContent   = 'C';
-    document.getElementById('wFeels').textContent  = `${toC(feelsF)}°C`;
-    toggleBtn.textContent = 'Switch to °F';
+    document.getElementById('wTemp').textContent  = toC(rawF);
+    document.getElementById('wUnit').textContent  = 'C';
+    document.getElementById('wFeels').textContent = `${toC(feelsF)}°`;
+    toggleBtn.textContent = '°F';
+    // Re-render forecast in C
+    if (lastForecastRaw) weather_displayForecastC(lastForecastRaw);
   }
 });
 
-
-// ── Small utility helpers ──────────────────────────────────────────────────
-
-function showLoader(on) {
-  loader.style.display = on ? 'block' : 'none';
+function weather_displayForecastC(data) {
+  const toC  = f => Math.round((f - 32) * 5 / 9);
+  const days = forecast_groupByDay(data.list);
+  stripDays.innerHTML = '';
+  days.forEach((day, i) => {
+    const el = document.createElement('div');
+    el.className = 'strip-day' + (i === 0 ? ' active' : '');
+    el.innerHTML = `
+      <div class="strip-day-name">${day.shortName}</div>
+      <div class="strip-day-icon">${weather_toEmoji(day.conditionId)}</div>
+      <div class="strip-day-hi">${toC(day.hiF)}°</div>
+      <div class="strip-day-lo">${toC(day.loF)}°</div>`;
+    stripDays.appendChild(el);
+  });
+  detailDays.innerHTML = '';
+  days.forEach(day => {
+    const el = document.createElement('div');
+    el.className = 'detail-day';
+    el.innerHTML = `
+      <div class="detail-day-icon">${weather_toEmoji(day.conditionId)}</div>
+      <div class="detail-day-body">
+        <div class="detail-day-header">
+          <div class="detail-day-name">${day.fullName}</div>
+          <div class="detail-day-temps"><strong>${toC(day.hiF)}°C</strong> / ${toC(day.loF)}°C</div>
+        </div>
+        <div class="detail-day-desc">${day.description}</div>
+        <div class="detail-day-meta">
+          <span>💧 ${day.humidity}%</span>
+          <span>💨 ${Math.round(day.windMph)} mph</span>
+          <span>🌧 ${Math.round(day.pop * 100)}% precip chance</span>
+        </div>
+      </div>`;
+    detailDays.appendChild(el);
+  });
 }
 
+// ── Utilities ─────────────────────────────────────────────────────────────────
+function showLoader(on) { loader.style.display = on ? 'block' : 'none'; }
 function showError(msg) {
   errorEl.textContent   = msg;
   errorEl.style.display = msg ? 'block' : 'none';
