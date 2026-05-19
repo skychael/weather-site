@@ -107,7 +107,7 @@
 
     #cityInput {
       width: 100%;
-      padding: 14px 14px 14px 44px;
+      padding: 14px 40px 14px 44px; /* right padding makes room for the ✕ button */
       border: 1.5px solid var(--glass-border);
       border-radius: 12px;
       background: rgba(255,255,255,0.55);
@@ -123,6 +123,27 @@
       box-shadow: 0 0 0 3px rgba(46,109,164,0.15);
       background: rgba(255,255,255,0.75);
     }
+
+    /* Clear (✕) button inside the search box */
+    #clearBtn {
+      display: none; /* hidden until user types something */
+      position: absolute;
+      right: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 2px;
+      color: var(--text-muted);
+      line-height: 1;
+      transition: color 0.15s, transform 0.15s;
+    }
+    #clearBtn:hover {
+      color: var(--sky-deep);
+      transform: translateY(-50%) scale(1.15);
+    }
+    #clearBtn.visible { display: block; }
 
     #suggestions {
       display: none;
@@ -154,24 +175,6 @@
     .suggestion-item .pin { font-size: 1.1rem; flex-shrink: 0; }
     .suggestion-item .label { line-height: 1.3; }
     .suggestion-item .sub { font-size: 0.8rem; color: var(--text-muted); }
-
-    .search-btn {
-      margin-top: 14px;
-      width: 100%;
-      padding: 13px;
-      background: var(--sky-deep);
-      color: #fff;
-      border: none;
-      border-radius: 12px;
-      font-family: 'DM Sans', sans-serif;
-      font-size: 1rem;
-      font-weight: 500;
-      cursor: pointer;
-      letter-spacing: 0.03em;
-      transition: background 0.2s, transform 0.1s;
-    }
-    .search-btn:hover { background: var(--sky-mid); }
-    .search-btn:active { transform: scale(0.98); }
 
     .hint {
       margin-top: 10px;
@@ -386,12 +389,13 @@
      PASTE YOUR API KEYS HERE
      ═══════════════════════════════════════ -->
 <script>
-  const GEOAPIFY_KEY = '75ad35d550f1455ab47ad6f172331819';        // geoapify.com       — search & fuzzy matching
+  const GEOAPIFY_KEY = '75ad35d550f1455ab47ad6f172331819';  // geoapify.com       — search & fuzzy matching
   const OWM_KEY      = '6c928cfba8a5e8b86a736491f46b345c';  // openweathermap.org — weather data
 </script>
 
 <div class="search-card">
   <div class="input-wrap">
+    <!-- Search icon on the left -->
     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
       <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
     </svg>
@@ -402,11 +406,18 @@
       autocomplete="off"
       spellcheck="false"
     />
+    <!-- Clear (✕) button on the right — shown only when input has text -->
+    <button id="clearBtn" aria-label="Clear search">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+        <circle cx="12" cy="12" r="10"/>
+        <line x1="15" y1="9" x2="9" y2="15"/>
+        <line x1="9" y1="9" x2="15" y2="15"/>
+      </svg>
+    </button>
     <div id="suggestions"></div>
   </div>
   <div class="error-msg" id="errorMsg"></div>
-  <button class="search-btn" id="searchBtn">Get Weather</button>
-  <p class="hint">Try "Atlnta GA", "Reno NV", or "89501"</p>
+  <p class="hint">Pick a suggestion from the dropdown, or press Enter</p>
 </div>
 
 <div class="loader" id="loader"><div class="loader-ring"></div></div>
@@ -519,7 +530,7 @@ let pendingCoords  = null;   // { lat, lon } — written by Section A, read by S
 
 const input      = document.getElementById('cityInput');
 const suggestBox = document.getElementById('suggestions');
-const searchBtn  = document.getElementById('searchBtn');
+const clearBtn   = document.getElementById('clearBtn');
 const loader     = document.getElementById('loader');
 const resultEl   = document.getElementById('weatherResult');
 const errorEl    = document.getElementById('errorMsg');
@@ -529,6 +540,22 @@ const toggleBtn  = document.getElementById('toggleUnit');
 if (GEOAPIFY_KEY !== 'YOUR_GEOAPIFY_KEY' && OWM_KEY !== 'YOUR_OPENWEATHERMAP_KEY') {
   setupPanel.style.display = 'none';
 }
+
+// Show/hide the ✕ clear button depending on whether the input has text
+function updateClearBtn() {
+  clearBtn.classList.toggle('visible', input.value.length > 0);
+}
+
+// Clear button click — wipe the input, hide weather result, reset state
+clearBtn.addEventListener('click', () => {
+  input.value   = '';
+  pendingCoords = null;
+  closeSuggestions();
+  showError('');
+  resultEl.style.display = 'none';
+  updateClearBtn();
+  input.focus();
+});
 
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -545,6 +572,7 @@ if (GEOAPIFY_KEY !== 'YOUR_GEOAPIFY_KEY' && OWM_KEY !== 'YOUR_OPENWEATHERMAP_KEY
 // hammering the API on every single keystroke.
 input.addEventListener('input', () => {
   pendingCoords = null;
+  updateClearBtn();
   clearTimeout(debounceTimer);
   const q = input.value.trim();
   if (q.length < 2) { closeSuggestions(); return; }
@@ -694,12 +722,9 @@ function closeSuggestions() {
 // It figures out where the coordinates come from, then passes them
 // to the Weather API. Nothing else happens here.
 //
-// Think of it as a relay race: Section A passes the baton (lat/lon),
-// Section B decides whether to run with it or fetch a fresh one,
-// then hands it off to Section C.
+// Triggered by: dropdown pick (Section A) or Enter key.
+// No button — the dropdown IS the primary action.
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-searchBtn.addEventListener('click', startSearch);
 
 async function startSearch() {
   closeSuggestions();
